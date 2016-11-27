@@ -1,0 +1,24 @@
+{
+  "name": "rotato",
+  "version": "0.0.1",
+  "description": "Marionette with dynamically configurable views",
+  "main": "app/driver.js",
+  "scripts": {
+    "test": "test",
+    "start": "webpack-dev-server --host 0.0.0.0 --port 3000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tbko/rotato/"
+  },
+  "keywords": [
+    "marionette",
+    "webpack",
+    "flexible"
+  ],
+  "author": "tbko",
+  "license": "MIT",
+  "devDependencies": {
+    "html-webpack-plugin": "^2.24.1"
+  }
+}
