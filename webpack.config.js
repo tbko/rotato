@@ -4,11 +4,55 @@ const HtmlGeneratorWebpack = require('html-webpack-plugin');
 const path = require('path');
 
 
+const isProd = process.env['NODE_ENV'] == 'production';
+let sourcemaps;
+
+let pluginsSet = [
+  new HtmlGeneratorWebpack({
+    template: './app/tmpl/index.hbs'
+  }),
+  new webpack.ProvidePlugin({
+    '_time': 'moment',
+    '_money': 'accounting',
+    '_promise': 'bluebird',
+    '$': 'jquery',
+    '_': 'lodash',
+    'Bb': 'backbone',
+    'Mn': 'backbone.marionette'
+  }),
+  new webpack.optimize.CommonsChunkPlugin({
+    names: ['babelpolyfill', 'vendor'],
+    minChunks: Infinity,
+    filename: '[name].js'
+  })
+];
+
+if (isProd) {
+
+  pluginsSet = pluginsSet.concat(
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false
+      },
+      minimize: true
+    })
+  );
+
+} else {
+
+  sourcemaps = 'inline-source-map';
+
+}
+
 module.exports = {
   
-  devtool: 'inline-source-map',
+  devtool: sourcemaps,
 
-  entry: ['./app/driver.js'],
+  entry: {
+    app: ['./app/driver.js'],
+    vendor: ['jquery', 'lodash', 'bluebird', 'moment', 'accounting', 'backbone', 'backbone.marionette'],
+    babelpolyfill: ['babel-polyfill']
+  },
 
   module: {
     rules: [{
@@ -17,37 +61,26 @@ module.exports = {
     }, {
       test: /\.es6$/,
       loader: 'babel-loader',
-      include: /app/
+      include: /app/,
+      query: {
+        presets: ["es2015", "stage-0"]
+      }
     }, {
       test: /\.tsx?$/,
-      loader: 'ts-loader'
+      loaders: ['babel-loader?presets[]=es2015,presets[]=stage-0', 'awesome-typescript-loader']
     }, {
       test: /\.coffee$/,
       loader: "coffee-loader"
     }]
   },
 
-  // output: {
-  //   path: path.join(__dirname, 'build'),
-  //   filename: 'app.js',
-  //   publicPath: '/'
-  // },
+  output: {
+    path: path.join(__dirname, 'build'),
+    filename: 'app.js',
+    publicPath: '/'
+  },
 
-  plugins: [
-    new HtmlGeneratorWebpack({
-      hash: true,
-      template: './app/tmpl/index.hbs'
-    }),
-    new webpack.ProvidePlugin({
-      '_time': 'moment',
-      '_money': 'accounting',
-      '_promise': 'bluebird',
-      '$': 'jquery',
-      '_': 'lodash',
-      'Bb': 'backbone',
-      'Mn': 'backbone.marionette'
-    }),
-  ],
+  plugins: pluginsSet,
 
   resolve: {
     modules: [

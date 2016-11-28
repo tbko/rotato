@@ -1,5 +1,21 @@
 {
-  "compilerOptons": {
-    "sourceMap":  true
+  "compilerOptions": {
+    "target": "es6",
+    "module": "es2015",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "noEmitHelpers": true,
+    "skipDefaultLibCheck": true,
+    "strictNullChecks": false,
+    "outDir": "tmp"
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "awesomeTypescriptLoaderOptions": {
+    "useBabel": true,
+    "useCache": true
   }
 }
