@@ -10,7 +10,7 @@ class Greeter {
 
 let greeter;
 // let greeter = new Greeter(1);
-greeter = new Greeter("I'm alive!!!!!!!");
+greeter = new Greeter("I'm alive!!!");
     
 const divEl = document.createElement('div');
 

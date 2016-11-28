@@ -1,11 +1,20 @@
+const webpack = require('webpack');
 const HtmlGeneratorWebpack = require('html-webpack-plugin');
 
-module.exports = {
+const path = require('path');
 
-  entry: './app/driver.js',
+
+module.exports = {
+  
+  devtool: 'inline-source-map',
+
+  entry: ['./app/driver.js'],
 
   module: {
     rules: [{
+      test: /\.hbs$/,
+      loader: "handlebars-loader"
+    }, {
       test: /\.es6$/,
       loader: 'babel-loader',
       include: /app/
@@ -18,7 +27,36 @@ module.exports = {
     }]
   },
 
+  // output: {
+  //   path: path.join(__dirname, 'build'),
+  //   filename: 'app.js',
+  //   publicPath: '/'
+  // },
+
   plugins: [
-    new HtmlGeneratorWebpack({hash: true})
-  ]
+    new HtmlGeneratorWebpack({
+      hash: true,
+      template: './app/tmpl/index.hbs'
+    }),
+    new webpack.ProvidePlugin({
+      '_time': 'moment',
+      '_money': 'accounting',
+      '_promise': 'bluebird',
+      '$': 'jquery',
+      '_': 'lodash',
+      'Bb': 'backbone',
+      'Mn': 'backbone.marionette'
+    }),
+  ],
+
+  resolve: {
+    modules: [
+      path.resolve(__dirname, 'app'),
+      path.resolve(__dirname, 'node_modules'),
+    ],
+    extensions: ['.js'],
+    alias: {
+      'underscore': 'lodash'
+    }
+  }
 }
